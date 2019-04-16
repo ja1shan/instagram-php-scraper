@@ -1523,4 +1523,82 @@ class Instagram
             throw new InstagramException('Response status is ' . $jsonResponse['status'] . '. Body: ' . static::getErrorBody($response->body) . ' Something went wrong. Please report issue.', $response->code);
         }
     }
+
+
+    /**
+     * @param string $username
+     * @return array
+     * @throws InstagramException
+     * @throws InstagramNotFoundException
+     */
+    public function getSavedShortcodes($username)
+    {
+        $response = Request::get(Endpoints::getSavedUrl($username), $this->generateHeaders($this->userSession));
+
+        if ($response->code === static::HTTP_NOT_FOUND) {
+            throw new InstagramNotFoundException('Account with given username does not exist.');
+        }
+        if ($response->code !== static::HTTP_OK) {
+            throw new InstagramException('Response code is ' . $response->code . '. Body: ' . static::getErrorBody($response->body) . ' Something went wrong. Please report issue.');
+        }
+
+        $nodes = [];
+        if (preg_match('/window._sharedData\s\=\s(.*?)\;<\/script>/', $response->raw_body, $matches)) {
+            $data = json_decode($matches[1], true, 512, JSON_BIGINT_AS_STRING);
+            if (isset($data['entry_data']['ProfilePage'][0]['graphql']['user']['edge_saved_media']['edges'])) {
+                $nodes = $data['entry_data']['ProfilePage'][0]['graphql']['user']['edge_saved_media']['edges'];
+            }
+        }
+
+        $shortcodes = [];
+        foreach ($nodes as $node) {
+            $shortcodes[$node['node']['id']] = $node['node']['shortcode'];
+        }
+
+        return $shortcodes;
+    }
+
+    /**
+     * @param int|string|Media $mediaId
+     *
+     * @return void
+     * @throws InstagramException
+     */
+    public function save($mediaId)
+    {
+        $mediaId = $mediaId instanceof Media ? $mediaId->getId() : $mediaId;
+        $response = Request::post(Endpoints::getSaveUrl($mediaId), $this->generateHeaders($this->userSession));
+
+        if ($response->code !== static::HTTP_OK) {
+            throw new InstagramException('Response code is ' . $response->code . '. Body: ' . static::getErrorBody($response->body) . ' Something went wrong. Please report issue.', $response->code);
+        }
+
+        $jsonResponse = $this->decodeRawBodyToJson($response->raw_body);
+
+        if ($jsonResponse['status'] !== 'ok') {
+            throw new InstagramException('Response status is ' . $jsonResponse['status'] . '. Body: ' . static::getErrorBody($response->body) . ' Something went wrong. Please report issue.', $response->code);
+        }
+    }
+
+    /**
+     * @param int|string|Media $mediaId
+     *
+     * @return void
+     * @throws InstagramException
+     */
+    public function unsave($mediaId)
+    {
+        $mediaId = $mediaId instanceof Media ? $mediaId->getId() : $mediaId;
+        $response = Request::post(Endpoints::getUnsaveUrl($mediaId), $this->generateHeaders($this->userSession));
+
+        if ($response->code !== static::HTTP_OK) {
+            throw new InstagramException('Response code is ' . $response->code . '. Body: ' . static::getErrorBody($response->body) . ' Something went wrong. Please report issue.', $response->code);
+        }
+
+        $jsonResponse = $this->decodeRawBodyToJson($response->raw_body);
+
+        if ($jsonResponse['status'] !== 'ok') {
+            throw new InstagramException('Response status is ' . $jsonResponse['status'] . '. Body: ' . static::getErrorBody($response->body) . ' Something went wrong. Please report issue.', $response->code);
+        }
+    }
 }

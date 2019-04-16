@@ -29,6 +29,7 @@ class Endpoints
     const ACCOUNT_JSON_PRIVATE_INFO_BY_ID = 'https://i.instagram.com/api/v1/users/{userId}/info/';
     const LIKE_URL = 'https://www.instagram.com/web/likes/{mediaId}/like/';
     const UNLIKE_URL = 'https://www.instagram.com/web/likes/{mediaId}/unlike/';
+    const SAVED_URL = 'https://www.instagram.com/{username}/saved/';
     const SAVE_URL = 'https://www.instagram.com/web/save/{mediaId}/save/';
     const UNSAVE_URL = 'https://www.instagram.com/web/save/{mediaId}/unsave/';
     const ADD_COMMENT_URL = 'https://www.instagram.com/web/comments/{mediaId}/add/';
@@ -184,12 +185,12 @@ class Endpoints
         return $url;
     }
 
-    public static function getLikeUrl($mediaId) 
+    public static function getLikeUrl($mediaId)
     {
         return str_replace('{mediaId}', urlencode($mediaId), static::LIKE_URL);
     }
 
-    public static function getUnlikeUrl($mediaId) 
+    public static function getUnlikeUrl($mediaId)
     {
         return str_replace('{mediaId}', urlencode($mediaId), static::UNLIKE_URL);
     }
@@ -204,5 +205,20 @@ class Endpoints
         $url = str_replace('{mediaId}', $mediaId, static::DELETE_COMMENT_URL);
         $url = str_replace('{commentId}', $commentId, $url);
         return $url;
+    }
+
+    public static function getSavedUrl($username)
+    {
+        return str_replace('{username}', urlencode($username), static::SAVED_URL);
+    }
+
+    public static function getSaveUrl($mediaId)
+    {
+        return str_replace('{mediaId}', urlencode($mediaId), static::SAVE_URL);
+    }
+
+    public static function getUnsaveUrl($mediaId)
+    {
+        return str_replace('{mediaId}', urlencode($mediaId), static::UNSAVE_URL);
     }
 }

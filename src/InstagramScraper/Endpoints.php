@@ -29,6 +29,8 @@ class Endpoints
     const ACCOUNT_JSON_PRIVATE_INFO_BY_ID = 'https://i.instagram.com/api/v1/users/{userId}/info/';
     const LIKE_URL = 'https://www.instagram.com/web/likes/{mediaId}/like/';
     const UNLIKE_URL = 'https://www.instagram.com/web/likes/{mediaId}/unlike/';
+    const SAVE_URL = 'https://www.instagram.com/web/save/{mediaId}/save/';
+    const UNSAVE_URL = 'https://www.instagram.com/web/save/{mediaId}/unsave/';
     const ADD_COMMENT_URL = 'https://www.instagram.com/web/comments/{mediaId}/add/';
     const DELETE_COMMENT_URL = 'https://www.instagram.com/web/comments/{mediaId}/delete/{commentId}/';
 

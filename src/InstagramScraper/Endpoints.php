@@ -8,12 +8,13 @@ class Endpoints
     const LOGIN_URL = 'https://www.instagram.com/accounts/login/ajax/';
     const ACCOUNT_PAGE = 'https://www.instagram.com/{username}';
     const MEDIA_LINK = 'https://www.instagram.com/p/{code}';
-    const ACCOUNT_MEDIAS = 'https://www.instagram.com/graphql/query/?query_hash=42323d64886122307be10013ad2dcc44&variables={variables}';
+    const ACCOUNT_MEDIAS = 'https://www.instagram.com/graphql/query/?query_hash=e769aa130647d2354c40ea6a439bfc08&variables={variables}';
     const ACCOUNT_JSON_INFO = 'https://www.instagram.com/{username}/?__a=1';
+    const ACCOUNT_ACTIVITY = 'https://www.instagram.com/accounts/activity/?__a=1';
     const MEDIA_JSON_INFO = 'https://www.instagram.com/p/{code}/?__a=1';
     const MEDIA_JSON_BY_LOCATION_ID = 'https://www.instagram.com/explore/locations/{{facebookLocationId}}/?__a=1&max_id={{maxId}}';
     const MEDIA_JSON_BY_TAG = 'https://www.instagram.com/explore/tags/{tag}/?__a=1&max_id={max_id}';
-    const GENERAL_SEARCH = 'https://www.instagram.com/web/search/topsearch/?query={query}';
+    const GENERAL_SEARCH = 'https://www.instagram.com/web/search/topsearch/?query={query}&count={count}';
     const ACCOUNT_JSON_INFO_BY_ID = 'ig_user({userId}){id,username,external_url,full_name,profile_pic_url,biography,followed_by{count},follows{count},media{count},is_private,is_verified}';
     const COMMENTS_BEFORE_COMMENT_ID_BY_CODE = 'https://www.instagram.com/graphql/query/?query_hash=33ba35852cb50da46f5b5e889df7d159&variables={variables}';
     const LAST_LIKES_BY_CODE = 'ig_shortcode({{code}}){likes{nodes{id,user{id,profile_pic_url,username,follows{count},followed_by{count},biography,full_name,media{count},is_private,external_url,is_verified}},page_info}}';
@@ -104,9 +105,10 @@ class Endpoints
         return str_replace('{max_id}', urlencode($maxId), $url);
     }
 
-    public static function getGeneralSearchJsonLink($query)
+    public static function getGeneralSearchJsonLink($query, $count = 10)
     {
-        return str_replace('{query}', urlencode($query), static::GENERAL_SEARCH);
+        $url = str_replace('{query}', urlencode($query), static::GENERAL_SEARCH);
+        return str_replace('{count}', urlencode($count), $url);
     }
 
     public static function getCommentsBeforeCommentIdByCode($variables)
@@ -127,6 +129,11 @@ class Endpoints
         $url = str_replace('{{likeId}}', urlencode($lastLikeID), $url);
 
         return $url;
+    }
+
+    public static function getActivityUrl()
+    {
+        return static::ACCOUNT_ACTIVITY;
     }
 
     public static function getFollowUrl($accountId)
